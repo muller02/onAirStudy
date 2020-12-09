@@ -1,0 +1,189 @@
+				#containerBB .modal-body{
+					background-color:#f9f1ed;
+				}
+				.tableB{
+					background-color:white;
+				}
+  				#thisday{
+                    background-color: #ad8686;
+                    padding-right: 10%;
+                    border-radius:5px;
+                    display:inline;
+                    color:white;
+                }
+                .Bday .highSpan{
+                	font-size:15px;
+                	width:38%;
+                	margin-top:5px;
+                    height: 25px;
+                }
+                .Bday div{
+                    margin: 0;
+                    display:inline-block;
+                    padding-left:10px;
+                    padding-right:10px;
+                    width:100%;
+                    height: 20px;
+                    text-overflow:ellipsis; 
+                    overflow:hidden;
+                	font-size:10px;
+                	float:left;
+                }
+                .Bday{
+                    border-radius: 10px;
+                    cursor: pointer;
+                }
+                .Bday:hover{
+                    background-color: #f9f1ed;
+                }
+                #prevB{
+                    margin-right: 30px;
+                    border: none;
+                    
+                }
+                #prevB img{
+                    width: 30px;
+                    background: none;
+                }
+                #nextB{
+                    margin-left: 30px;
+                    border: none;
+                }
+                #nextB img{
+                    width: 30px;
+                }
+                .infoB{
+                	height:150px;
+                }
+                .monthBB{
+                    font-size: 28px;
+                    font-weight: bold;
+                    text-align: center;
+
+                }
+                #monthB{
+                    width: 100px;
+                    display:inline-block;
+                }
+                .dropB{
+                    position: absolute;
+                    border: 1px solid black;
+                    width: 200px;
+                    background-color: #ad8686;
+                }
+                .dropB p{
+                    text-align: right;
+                    margin: 0;
+                    margin-right: 20px;
+                    cursor: pointer;
+                }
+                .dropB button{
+                    border: 0;
+                    outline: 0;
+                }
+                .dropB button:hover{
+                    background-color:#f9f1ed;
+                }
+                .yearBB{
+                    font-size: 30px;
+                    font-weight: bold;
+                    text-align: center;
+                }
+                .cal-divB{
+                	display:inline-block;
+                	/* float:right; */
+                	/* margin-left:250px; */
+                  	width:100%;
+                    background-color: FBF7FD;
+                    padding:50px;
+                }
+                th.sun, .sun .highSpan{
+                    color:red;
+                }
+                th.sat, .sat .highSpan{
+                    color:blue;
+                }
+                .tableB{
+                	border-radius: 10px;
+                }
+                .tableB tr td{
+                    padding: 0;
+                    width:100px;
+                    height:100px;
+                    margin: 5px;
+                }
+                .modal-body img{
+                    width: 25px;
+                }
+                .modal-body .datepick{
+                    text-align: center;
+                    width: 140px;
+                    height: 30px;
+                }
+                #iuschedule{
+                    text-align: center;
+                    margin-top:50px;
+                }
+                #iuschedule span{
+                    width: 200px;
+                }
+                #iuschedule input, #addTableTodo input{
+                	border:0;
+                	border-bottom:1px solid black;
+                	border-radius:10px;
+                }
+                .marginB{
+                    margin-bottom: 30px;
+                }
+                .datepickers-container{
+                    z-index: 9999;
+                }
+                #viewTable td{
+                	text-align:center;
+                	padding: 10px;
+                	padding-bottom:0;
+                }
+                .tdB{
+                	width:80px;
+                }
+                #viewTable{
+               		min-height:200px;
+                }
+                #todoTable td, #addTableTodo td{
+                	text-align:center;
+                }
+                #addTableTodo input{
+                	width:300px;
+                }
+				#todoTable label{
+					cursor:pointer;
+				}
+				#subB{
+					background-color: #ad8686;
+					border:1px solid white;
+				}
+				#subB:hover{
+					background-color: #f5cab5;
+					border:1px solid #ad8686;
+					color:#ad8686;
+				}
+				#viewTodoList .btn-danger, .delBtnB{
+					background-color: white;
+					color:#ff5e76;
+					border:1px solid white;
+				}
+				#viewTodoList .btn-primary{
+					background-color: white;
+					color:#6bbaff;
+					border:1px solid white;
+				}
+				#viewTodoList .btn-danger:hover, .delBtnB:hover{
+					background-color: #ff5e76;
+					color:white;
+					border:1px solid #ff5e76;
+				}
+				#viewTodoList .btn-primary:hover{
+					background-color: #6bbaff;
+					color:white;
+					border:1px solid #6bbaff;
+				}

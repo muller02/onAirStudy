@@ -1,0 +1,139 @@
+@charset "UTF-8";
+
+/* diaryList  */
+div.diary-container{
+	width:70%; 
+	height:900px; 
+	margin:0 auto;
+	text-align:center; 
+	font-family: 'Nanum Gothic', 'Secular One';
+	font-weight: bold;
+}
+.hr-text {
+  font-size: 30px;
+  line-height: 1em;
+  position: relative;
+  outline: 0;
+  border: 0;
+  color: black;
+  text-align: center;
+  height: 1.5em;
+  opacity: .5;
+}
+.hr-text:before {
+  content: '';
+  background: linear-gradient(to right, transparent, #818078, transparent);
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 1px;
+}
+.hr-text:after {
+  content: attr(data-content);
+  position: relative;
+  display: inline-block;
+  padding: 0 .5em;
+  line-height: 1.5em;
+  color: #000;
+  background-color: #fcfcfa;
+}
+.diary-top-container{
+	margin: 5px;
+	background-color: rgb(255, 195, 170);
+}
+.diary-search-write-container{
+	width: 800px;
+	float : left;
+	margin-top: 20px; 
+	margin-bottom: -50px;
+	margin-left: -146px;
+}
+#selectFrm{
+	height: 100px;
+	display: inline-block;
+}
+#diary-select-bar{
+	height: 39px;
+	border: 3px solid rgb(255, 195, 163);
+}
+.pink_window {
+	display: inline-block;
+	width: 282px; height: 40px;
+	border: 3px solid rgb(255, 195, 163);
+	background: white;
+	vertical-align: top;
+}
+#keywordS {
+	width: 260px; height: 30px;
+	border: 0;
+	line-height: 21px;
+	font-weight: bold;
+	font-size: 16px;
+	outline: none;
+}
+#diary-searchbtn {
+	width: 60px; height: 40px;
+	margin: 0; border: 0;
+	vertical-align: top;
+	background: white;
+	color: black;
+	font-weight: ivory;
+	border: 1px solid gray;
+	border-radius: 3px;
+	cursor: pointer;
+}
+#diary-searchbtn:hover {
+	background: rgb(255, 195, 163);
+	color: white;
+	border: none;
+}
+#diary-writebtn{
+	vertical-align:top; 
+	/* float: right; */
+	background: rgb(255, 195, 163);
+	color: white;
+	height:40px;
+	border-radius: 3px;
+	
+}
+#diary-writebtn:hover {
+	background: rgb(255, 195, 195);
+	color: black;
+	border: 1px solid #000;
+}
+
+
+/* diaryText(다이어리글쓰기)  */
+div#diaryfrm-container{
+	text-align: center;
+	float: center;
+	margin: 0 auto;
+	line-height: 10px;
+}
+div.diarywrite-header-container{
+	background-color: rgb(255, 195, 163);
+	padding: 20px;
+	margin: 10px 0;
+}
+.form-control{
+	margin-top: 22px;
+}
+.form-control:hover{
+	border: 2px solid rgb(255, 195, 163);
+}
+#writebtnS{
+	background: white;
+	border : 1px solid rgb(255, 195, 163);
+	color: black;
+	float: right;
+	width: 80px;
+	height: 25px;
+	font-size: 10px;
+	vertical-align:top
+}
+#writebtnS:hover{
+	background: gray;
+	border : none;
+	color: white;
+}

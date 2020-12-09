@@ -3,4 +3,107 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="invitation">
+
+<select id="selectInvitationList" resultMap="invitationMap">
+
+	select  
+		I.*,
+		(select     sr_title
+    	from    sr_info
+    	where sr_no =I.sr_no) s_title,
+    	(select     sr_goal
+    	from    sr_info
+    	where sr_no =I.sr_no) s_goal
+    	
+	from
+		invitation I
+	
+	order by
+		no desc
+
+</select>
+
+<resultMap type="map" id="invitationMap">
+  		<id column="no" property="no"/>
+  		<result column="hosting_id" property="hostingId"/>
+  		<result column="invited_id" property="invitedId"/>
+  		<result column="sr_no" property="srNo"/>
+  		<result column="invitation_date" property="invitationDate"/>
+  		<result column="invitation_yn" property="invitationYN"/>
+  		<result column="sr_ended_yn" property="srEndedYN"/>
+  		<result column="s_title" property="sTitle"/>
+  		<result column="s_goal" property="sGoal"/>
+  		
+  	</resultMap>
+  	
+ <delete id="deleteInvitation" parameterType="int">
+  delete from 
+  	invitation 
+    where 	
+    no = #{no}
+ 
+ </delete>
+ 
+ <update id="updateInvitation">
+ update
+ 	invitation
+ set 
+ 	invitation_yn = 'Y'
+ where
+  	no = #{no}
+ </update>
+ 
+ <insert id="insertStudyRoomLog">
+ insert into
+ 	sr_log
+values(
+	seq_sr_log_no.nextval, #{srNo}, #{memberId}, '참여', 0, 'N')
+
+ </insert>
+ 
+ 	<select id="selectParticipatingRoomCnt" resultType="_int">
+		select 
+			count(*) 
+		from 
+			sr_log 
+		where 
+			member_id = #{memberId} 
+		and 
+			status_log = '참여'
+	</select>
+	
+	<select id="selectMemberList" resultMap="memberMap">
+	select 
+		member_id, member_name 
+	from 
+		member
+	where 
+		member_id not in (select member_id from sr_log where sr_no = #{roomNum} and status_log = '참여') 
+	and 
+		member_role = 'P' 
+	and 
+		member_id like '%' || #{searchId} || '%'
+	</select>
+	
+	<resultMap type="member" id="memberMap">
+    <result column="member_id" property="memberId"/>
+  	<result column="member_name" property="memberName"/>
+  	<result column="password" property="password"/>
+  	<result column="member_role" property="memberRole"/>
+  	<result column="phone" property="phone"/>
+  	<result column="diligent_point" property="diligentPoint"/>
+  	<result column="blacklist_yn" property="blacklist"/>
+  	<result column="withdraw_yn" property="withdraw"/>
+  	<result column="member_comment" property="comment"/>
+  	<result column="category" property="category"/> 
+  	<result column="m_pic" property="mPic"/>
+  </resultMap>
+	
+	
+	<insert id="sendInvitation">
+		insert into invitation values(seq_invitation_no.nextval, #{hostingId}, #{invitedId}, #{srNo}, default, default)
+	</insert>
+	
+	
+	
 </mapper>

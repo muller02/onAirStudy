@@ -1,0 +1,197 @@
+@charset "UTF-8";
+
+/* 바탕  */
+#member-update-container {
+			width:100%; 
+			margin: 0 auto; 
+			background-color: #FBF7FD;
+    		padding: 20px;
+			align-items: center;
+			display: grid;
+			justify-items: center;
+
+}
+#member-update-container h4{
+			padding: 20px 20px 0 20px;
+}
+/* 내정보 내용  */
+.myinformation-container {
+  display: grid;
+  grid-template-areas: "left right";
+  max-width: 900px;
+}
+
+.left-containerS {
+    background: #fff;
+    overflow: hidden;
+    padding: 46px 0 0 36px;
+    position: relative;
+    width: 300px;
+    height: 187px;
+}
+.left-containerS h1 {
+  color: rgba(0, 0, 0, 0.8);
+  display: inline-block;
+  font-size: 20px;
+  margin-left: 20%;
+}
+.left-containerS h1 i {
+  background: #F7B1AB;
+  border-radius: 50%;
+  color: #807182;
+  font-size: 24px;
+  margin-right: 5px;
+  padding: 10px;
+  transform: rotate(-45deg);
+}
+.left-containerS .payment-history-container {
+  bottom: -5px;
+  position: absolute;
+  text-align: center;
+}
+.left-containerS .payment-history-container:before {
+  background: #fff; 
+  content: "";
+  float:center;
+  height: 100%;
+  left: 0;
+  opacity: .4;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+  letter-spacing: 3px;
+}
+
+
+.right-containerS {
+  background: #d6c8e6;
+  display: grid;
+  grid-template-areas: "." ".";
+  width: 500px;
+}
+.right-containerS header{
+	padding:40px;
+}
+/* .right-containerS h5:nth-of-type(1) {
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 28px;
+} */
+.right-containerS .set {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+.right-containerS button {
+  background: rgba(60, 43, 66, 0.452);
+   border-radius: 5px; 
+}
+.right-containerS button:hover {
+  background: #171A2B;
+  color: white;
+} 
+.right-containerS input {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  height: 38px;
+  line-height: 38px;
+  padding-left: 5px;
+}
+.right-containerS input, .right-containerS label {
+  color: rgba(0, 0, 0, 0.8);
+}
+.right-container header {
+  padding: 40px;
+}
+.right-containerS label, .right-containerS input, .right-containerS .m-photo {
+  width: 176px;
+}
+.right-containerS .m-photo {
+  align-items: center;
+  display: grid;
+  grid-template-areas: ". .";
+}
+.right-containerS .m-photo button {
+  border: none;
+  border-radius: 50%;
+  height: 38px;
+  margin-right: 10px;
+  outline: none;
+  width: 38px;
+}
+.right-containerS .m-photo button i {
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 16px;
+}
+
+
+.button-container {
+  align-items: center;
+  background: #fff;
+  display: grid;
+ /*  padding: 0px 40px; */
+}
+.button-container button {
+ border-radius: 15px; 
+ float: right;
+}
+.button-container #btnS {
+  background: #fff;
+  transition: .2s all ease-in-out;
+}
+.button-container #btnS:hover {
+  background: #171A2B;
+  color: white;
+}
+.button-container #btnout {
+  background: #fff;
+  font-size:5px;
+  margin-left: 245px;
+}
+.button-container #btnout:hover {
+  background: gray;
+  color: white;
+}
+.button-container #btnblack {
+  background: rgba(128, 128, 128, 0.452);
+  border: 1px solid transparent;
+  color: #fff;
+}
+. .button-container #btnblack:hover {
+  background: rgba(60, 43, 66, 0.452);
+}
+
+.m-name label, .m-id label, .m-pwd label, .m-pwdcheck label, .m-phone label, .m-dpoint label, .m-blacklist label, .m-comment label   {
+  display: block;
+  margin-bottom: 5px;
+}
+
+
+/* 프로필사진 업로드  */
+.mProfile-container input[type="file"] { 
+		position: absolute; 
+		width: 1px; height: 1px; padding: 0; margin: -1px; 
+		overflow: hidden; 
+		clip:rect(0,0,0,0); 
+		border: 0; 
+} 
+.mProfile-container label { 
+		display: table-caption; 
+		padding: .5em .75em; 
+		color: #999; 
+		font-size: inherit; line-height: normal; vertical-align: middle; background-color: #fdfdfd; cursor: pointer; border: 1px solid #ebebeb; border-bottom-color: #e2e2e2; border-radius: .25em; } 
+/* named upload */ 
+.mProfile-container .file-input { 
+		display: inline-block; 
+		padding: .5em .75em; /* label의 패딩값과 일치 */ 
+		font-size: inherit; 
+		font-family: inherit; 
+		line-height: normal; 
+		vertical-align: middle; 
+		background-color: #f5f5f5; 
+		border: 1px solid #ebebeb; 
+		border-bottom-color: #e2e2e2;
+		border-radius: .25em; 
+		-webkit-appearance: none; /* 네이티브 외형 감추기 */ 
+		-moz-appearance: none; appearance: none; 
+}
+

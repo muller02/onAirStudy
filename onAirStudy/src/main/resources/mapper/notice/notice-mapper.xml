@@ -3,5 +3,71 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="notice">
+
+<select id="noticeList" resultType="map">
+select 
+	*
+from
+	notice
+where
+	rownum between #{ start } and #{ end }
+order by
+	notice_date
+</select>
+
+<insert id="noticeInsert">
+insert into
+	notice
+values(
+	seq_notice_no.nextval,
+	#{ title },
+	#{ content },
+	default,
+	default
+)
+</insert>
+
+<select id="noticeDetail" resultType="map">
+select
+	*
+from
+	notice
+where
+	no = #{ no }
+</select>
+
+<update id="noticeUpdate">
+update
+	notice
+set
+	title = #{ title },
+	content = #{ content }
+where
+	no = #{ no }
+</update>
+
+<delete id="deleteNotice">
+delete
+	notice
+where
+	no = #{ no }
+</delete>
+
+<update id="updateCnt">
+update
+	notice
+set
+	read_cnt = read_cnt+1
+where
+	no = #{ no }
+</update>
+
+<select id="totalNotice" resultType="int">
+select
+	count(*)
+from
+	notice
+</select>
+
  
 </mapper>

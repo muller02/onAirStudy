@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="studytime">
+
+<select id="selectList" parameterType="String" resultMap="studytimeMap">
+
+select 
+	member_id,
+	study_time,
+	to_char(study_date, 'yyyy-MM-dd') as "s_date"
+from 
+	study_time
+where member_id = #{memberId} 
+
+
+
+</select>
+
+<select id="selectsrList" resultMap="studytimeMap">
+	select 
+	    sr_title
+	from 
+	    sr_log L left join sr_info I on L.sr_no = I.sr_no 
+	where member_id = #{memberId}
+		and L.sr_no > 8
+
+</select>
+
+
+
+
+<insert id="insertStudyTime">
+
+insert into
+	study_time
+values(
+	seq_study_time_no.nextval,
+	#{ memberId },
+	#{ studyTime },
+	#{ studyDate }
+)
+
+</insert>
+
+
+<resultMap type="map" id="studytimeMap">
+	<id column="no" property="no"/>
+	<result column="member_id" property="memberId"/>
+	<result column="study_time" property="studyTime"/>
+	<result column="study_date" property="studyDate"/>
+
+</resultMap>
+
+
+
+</mapper>

@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="admin">
+
+
+<select id="adminMain" resultType="map">
+select 
+    (select count(*) from member) as "member_all",
+    (select count(*) from diary) as "diary_all", 
+    (select count(*) from diary where to_char(diary_date, 'yyMMdd') = to_char(sysdate, 'yyMMdd')) as "diary_today",
+    (select count(*) from diary_reply) as "reply_all",
+    (select count(*) from diary_reply where to_char(reply_date, 'yyMMdd') = to_char(sysdate, 'yyMMdd')) as "reply_today",
+    (select count(*) from report_log) as "report_all",
+    (select count(*) from report_log where to_char(reported_date, 'yyMMdd') = to_char(sysdate, 'yyMMdd')) as "report_today",
+    (select count(*) from sr_list) as "sr_all",
+    (select count(*) from sr_list where to_char(sr_enroll_date, 'yyMMdd') = to_char(sysdate, 'yyMMdd')) as "sr_today",
+    (select count(*) from profile_attachment) as "attach_all",
+    (select count(*) from profile_attachment where substr(renamed_filename, 1, instr(renamed_filename, '_')-1) = to_char(sysdate, 'yyyyMMdd')) as "attach_today",
+    (select count(*) from message) as "msg_all"
+from dual
+</select>
+
+ 
+ <select id="memberList" resultMap="memberMap">
+select 
+	* 
+from 
+	( select 
+		rownum as rnum, 
+		M.* 
+	from( select 
+				* 
+			from 
+				member 
+			<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+			 	where
+			 	<if test="searchType == 'memberId'">
+					 member_id like '%' || #{ searchKeyword } || '%'
+			 	</if>
+			 	<if test="searchType =='blacklist'">
+					 blacklist_yn = #{ searchKeyword }
+ 				</if>
+			</if>
+			order by 
+				1 desc) M 
+		) M 
+where 
+	rnum between #{ start } and #{ end }
+ </select>
+
+<select id="totalMember" resultType="int">
+select
+	count(*)
+from
+	member
+<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+	where
+	<if test="searchType == 'memberId'">
+		member_id like '%' || #{ searchKeyword } || '%'
+	</if>
+	<if test="searchType =='blacklist'">
+		blacklist_yn = #{ searchKeyword }
+	</if>
+</if>
+</select>
+
+<select id="totalService" resultType="int">
+select
+	count(*)
+from
+	service ss
+join
+	service_category cc
+on ss.category = cc.no
+where
+	reply_no = 0
+<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+	<if test="searchType == 'memberId'">
+		and member_id like '%' || #{ searchKeyword } || '%'
+	</if>
+	<if test="searchType =='category'">
+		and ss.category = #{ searchKeyword }
+	</if>
+	<if test="searchType =='status'">
+		and service_status = #{ searchKeyword }
+	</if>
+</if>
+</select>
+
+<select id="totalReport" resultType="int">
+ select
+ 	count(*)
+ from
+ 	report_log
+  <if test="searchKeyword != null">
+	 where
+		reported_member like '%'||#{ searchKeyword }||'%'
+</if>
+</select>
+
+<select id="totalStudy" resultType="int">
+select
+	count(*)
+ from
+ 	sr_list L 
+join 
+ 	sr_info I 
+ using(sr_no)
+ join 
+ 	sr_category C 
+ on 
+ 	L.sr_category = C.no
+
+ <if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+ 	<if test="searchType == 'memberId'">
+		 and member_id like '%' || #{ searchKeyword } || '%'
+ 	</if>
+ 	<if test="searchType =='srNo'">
+		 and sr_no = #{ searchKeyword }
+ 	</if>
+ 	<if test="searchType =='srSort'">
+		 and sr_sort = #{ searchKeyword }
+ 	</if>
+</if>
+</select>
+ 
+ 
+ <resultMap type="member" id="memberMap">
+    <result column="member_id" property="memberId"/>
+  	<result column="member_name" property="memberName"/>
+  	<result column="password" property="password"/>
+  	<result column="member_role" property="memberRole"/>
+  	<result column="phone" property="phone"/>
+  	<result column="diligent_point" property="diligentPoint"/>
+  	<result column="blacklist_yn" property="blacklist"/>
+  	<result column="withdraw_yn" property="withdraw"/>
+  	<result column="member_comment" property="comment"/>
+  	<result column="category" property="category"/> 
+  </resultMap>
+  
+  <select id="serviceCnt" resultType="int">
+  select
+  	count(*)
+  from
+  	service
+  where
+  	service_status = '답변대기'
+  </select>
+  
+  <select id="memberDetail" resultType="map">
+select 
+	M.*, 
+	S.category as "cate", 
+	(select count(*) from report_log where reported_member = #{ memberId } ) as "report" 
+from 
+	member M 
+join 
+	sr_category S 
+on M.category = S.no
+where 
+	member_id = #{ memberId }
+and withdraw_yn = 'N'
+  </select>
+  
+  <select id="serviceList" resultType="map">
+select 
+	* 
+from 
+	( select 
+		rownum as rnum, 
+		M.* 
+	from( select 
+				ss.no as "NO",
+				cc.category as "cate",
+				service_status,
+				member_id,
+				service_date,
+				service_title
+			from 
+				service ss
+			join
+				service_category cc
+			on ss.category = cc.no
+			where
+				reply_no = 0
+			<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+			 	<if test="searchType == 'memberId'">
+					and member_id like '%' || #{ searchKeyword } || '%'
+			 	</if>
+			 	<if test="searchType =='category'">
+					and cc.no = #{ searchKeyword }
+			 	</if>
+			 	<if test="searchType =='status'">
+					and service_status = #{ searchKeyword }
+			 	</if>
+			</if>
+			order by 
+				1 desc) M 
+		) M 
+where 
+	rnum between #{ start } and #{ end }
+  </select>
+  
+  <select id="serviceDetail" resultType="map">
+ select
+  	S.*, 
+  	C.category as "cate"
+ from
+  	service S
+ join 
+ 	service_category C 
+ on S.category = C.no
+ where
+  	S.no = #{ no }
+  </select>
+
+  <select id="serviceDetailAv" resultType="map">
+ select
+  	S.*, 
+  	C.category as "cate"
+ from
+  	service S
+ join 
+ 	service_category C 
+ on S.category = C.no
+where
+ 	reply_no= #{ no }
+  </select>
+  
+  
+ <insert id="insertService">
+ insert into
+ 	service
+ values(
+ 	seq_service_no.nextval,
+	#{ category },
+	#{ serviceStatus },
+	#{ serviceTitle },
+	#{ serviceContent },
+	#{ replyNo },
+	'admin',
+	sysdate,
+	'N',
+	#{ serviceLevel }
+ 
+ )
+ </insert>
+ 
+ <update id="updateService">
+ update
+ 	service
+ set
+ 	service_status = '답변완료'
+where
+	no = #{ replyNo } 
+ </update>
+ 
+ <select id="reportList" resultType="map" parameterType="string">
+ 
+ select 
+	* 
+from 
+	( select 
+		rownum as rnum, 
+		M.* 
+	from( select 
+				 L.no as "no",
+				 C.category as "category",
+				 content_id,
+				 content_category,
+				 reporter,
+				 reported_member,
+				 reported_date,
+				 vaild_yn
+		 from
+		 	report_log L
+		 join
+		 	report_category C
+		 on
+		 	L.category = C.no
+		 <if test="searchKeyword != null">
+		 where
+		 	reported_member like '%'||#{ searchKeyword }||'%'
+		 </if>
+		 order by
+		 	L.no desc) M 
+		) M 
+where 
+	rnum between #{ start } and #{ end }
+ </select>
+ 
+ <select id="showModal1" resultType="map">
+ select 
+ 	no,
+ 	member_id,
+ 	sr_no,
+ 	chat_content,
+ 	to_char(send_date, 'yyyy-mm-dd') as "SEND_DATE"
+ from
+ 	chatting
+ where
+ 	no = #{ no }
+ </select>
+ 
+ <select id="showModal2" resultType="map">
+ select 
+ 	no,
+ 	sender_id,
+ 	receiver_id,
+ 	msg_content,
+ 	to_char(send_date, 'yyyy-mm-dd') as "SEND_DATE"
+ from
+ 	message
+ where
+ 	no = #{ no }
+ </select>
+ 
+ <select id="studyList" resultType="map">
+ 
+ select 
+	* 
+from 
+	( select 
+		rownum as rnum, 
+		M.* 
+	from( select 
+					sr_no,
+				 	member_id,
+				 	to_char(sr_enroll_date, 'yyyy-mm-dd') as "SR_ENROLL_DATE",
+				 	C.category as "CATEGORY",
+				 	sr_title,
+				 	sr_sort
+			from
+				sr_list L 
+			join 
+			 	sr_info I 
+			using(sr_no)
+			join 
+			 	sr_category C 
+			 on 
+			 	L.sr_category = C.no
+			<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+				where
+			 	<if test="searchType == 'memberId'">
+					member_id like '%' || #{ searchKeyword } || '%'
+			 	</if>
+			 	<if test="searchType =='srNo'">
+					sr_no = #{ searchKeyword }
+			 	</if>
+			 	<if test="searchType =='srSort'">
+					sr_sort = #{ searchKeyword }
+			 	</if>
+			</if>
+			order by 1 desc) M 
+		) M 
+where 
+	rnum between #{ start } and #{ end }
+ </select>
+ 
+ <select id="studyDetail" resultType="map">
+ select
+ 	sr_no,
+	member_id,
+	C.category as "CATEGORY",
+	sr_enroll_date,
+	sr_opened_yn,
+	sr_ended_yn,
+	sr_sort,
+	sr_title,
+	sr_goal,
+	sr_comment
+ from
+ 	sr_list L 
+ join 
+ 	sr_info I 
+ using(sr_no) 
+ join 
+ 	sr_category C 
+ on 
+ 	L.sr_category = C.no
+ where
+ 	sr_no = #{ no }
+ </select>
+ 
+ <select id="studyMembers" resultType="string">
+ select 
+ 	member_id 
+ from 
+ 	sr_log 
+ where 
+ 	sr_no = #{ no } 
+ and 
+ 	leader_yn='N'
+ </select>
+ 
+ <update id="studyDelete">
+ update
+ 	sr_list
+ set
+ 	sr_ended_yn = 'Y'
+ where
+ 	sr_no = #{ no }
+ </update>
+ 
+ <update id="updateReport">
+ update
+ 	report_log
+ set
+ 	vaild_yn = 'N'
+ where
+ 	no = #{ no }
+ </update>
+ 
+ <select id="memberAll" resultType="map">
+ <![CDATA[  
+select 
+	* 
+from 
+	(select count(*) as "all_cnt", to_char(enroll_date, 'yyyyMMdd') as "en_date" from member where enroll_date< to_date('20201026', 'yyyyMMdd') group by to_char(enroll_date, 'yyyyMMdd'))
+join 
+	(select count(*) as "p_cnt", to_char(enroll_date, 'yyyyMMdd') as "en_date" from member where member_role ='P' group by to_char(enroll_date, 'yyyyMMdd'))
+using 
+	("en_date")
+order by 1
+ ]]>
+ </select>
+ 
+ <insert id="sendMessage">
+ insert into
+ 	message
+ values(
+ 	seq_message_no.nextval,
+ 	'admin',
+ 	#{ memberId },
+ 	#{ content },
+ 	default,
+ 	default,
+ 	default,
+ 	default
+ )
+ </insert>
+ 
+ <select id="messageCnt" resultType="int">
+ select
+ 	count(*)
+ from
+ 	message
+ where
+ 	receiver_id = 'admin'
+ and
+	read_yn = 'N'
+ </select>
+ 
+ 
+ 
+</mapper>

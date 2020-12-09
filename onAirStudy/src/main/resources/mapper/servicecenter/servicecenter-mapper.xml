@@ -3,4 +3,183 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="service">
+
+
+
+ <select id="selectServiceList" resultType="ServiceCenter">
+<![CDATA[
+ select 
+ 		* 
+ from 
+ 		(select 
+ 				S.*, 
+ 				rownum rnum 
+ 		from 
+ 				(select 
+ 						S.* 
+ 				from 
+ 						service S  
+ 				where 
+ 						exists (select 
+ 										reply_no 
+ 								from 
+ 										service 
+ 								where 
+ 										S.reply_no = no 
+ 								and 
+ 										member_id = #{ memberId }) 
+ 				or 
+ 					member_id = #{ memberId }
+ 				order by 
+ 					3, 8 desc ) S  
+ 	) 
+
+ 	]]>
+ 	
+</select>
+
+<!-- 자주묻는 질문List -->
+<select id="selectServiceContentList" resultMap="serviceMap">
+	select *
+	from service_content
+</select>
+
+
+<select id="listAll" resultMap="serviceListMap">
+	select * 
+	from service
+	<include refid="search" />
+	order by no desc 
+</select>
+
+
+<select id="totalCount" resultType="int">
+			select 
+ 					count(*)
+ 			from 
+ 				service S  
+ 			where 
+ 				exists (select 
+ 								reply_no 
+ 						from 
+ 								service
+ 						where 
+ 								S.reply_no = no 
+ 						and
+ 								 member_id=#{ memberId }) 
+			or
+ 				member_id =#{ memberId }
+
+ </select>
+
+
+<select id="serviceDetail" resultType="map">
+select
+	*
+from
+	service
+where
+	no = #{ no }
+</select>
+
+
+<update id="serviceUpdate">
+
+	update 
+			service
+	set 
+			service_title = #{serviceTitle}, 
+			service_content = #{serviceContent}
+	where 
+			no = #{no}
+</update>
+
+
+<delete id="serviceDelete">
+	delete 
+	from 
+		service
+	where 
+		no = #{no}
+</delete>
+	
+	
+	
+<sql id="search">
+<choose>
+	
+          <!-- 작성자 , 내용, 제목으로 각각 검색할 수 있게끔 한다. -->
+            <when test="search_option == 'all' ">	
+            	where member_id like '%'||#{keyword}||'%'
+                      or category like '%' || #{keyword}||'%'
+                      or serviceTitle like '%'||#{keyword}||'%'  
+            </when>
+            <when test="category != 0">
+            	where category = #{category}
+            </when>
+            <otherwise>
+             
+          <!--    작성자 + 내용 + 제목을 포함한 항목을 검색할 수 있게끔 한다. -->
+                where ${search_option} like '%'||#{keyword}||'%'
+            </otherwise>
+</choose>
+</sql> 
+
+
+
+
+
+
+
+<resultMap type="map" id="serviceMap">
+	<id column="no" property="no"/>	
+	<result column="category" property="category"/>
+	<result column="title" property="title"/>
+	<result column="content" property="content"/>
+
+</resultMap>
+
+
+
+<insert id="insertService">
+
+	insert into 
+		service 
+	values(
+	seq_service_no.nextval, 
+		#{category},  
+		default, 
+		#{serviceTitle}, 
+		#{serviceContent},
+		0, 
+		#{memberId}, 
+		default, 
+		default, 
+		default
+	)
+</insert>
+
+
+	
+
+
+<resultMap type="map" id="serviceListMap">
+	
+	<result column="no" property="no"/>
+	<result column="category" property="category"/>
+	<result column="service_status" property="serviceStatus"/>
+	<result column="service_title" property="serviceTitle"/>
+	<result column="service_content" property="serviceContent"/>
+	<result column="reply_no" property="reply_no"/>
+	<result column="member_id" property="memberId"/>
+	<result column="service_date" property="serviceDate"/>
+	<result column="read_yn" property="read_yn"/>
+	<result column="service_level" property="serviceLevel"/>
+
+</resultMap>
+
+
+
+
+
 </mapper>

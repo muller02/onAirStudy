@@ -4,4 +4,186 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="scheduler">
 
+<select id="schedulerList" resultType="Scheduler">
+select
+	*
+from
+	scheduler
+<where>
+	<if test="memberId != null">
+	member_id = #{ memberId }
+	</if>
+	<if test="roomNum != null">
+		sr_no = #{ roomNum }
+	</if>	
+</where>
+order by 
+	schedule_yn, 
+	(end_date - start_date) desc
+</select>
+<resultMap id="listMap" type="map">
+	<id column="no" property="no"/>
+  		<result column="member_id" property="memberId"/>
+  		<result column="sr_no" property="srNo"/>
+  		<result column="start_date" property="startDate"/>
+  		<result column="end_date" property="endDate"/>
+  		<result column="content" property="content"/>
+  		<result column="color_code" property="colorCode"/>
+  		<result column="schedule_yn" property="scheduleYN"/>
+  		<result column="d_yn" property="dYN"/>
+  		<result column="time_opt" property="timeOpt"/>
+  		<result column="enable_yn" property="enableYN"/>
+</resultMap>
+
+<insert id="insertSchedule">
+	insert into
+		scheduler
+	values(
+		seq_schedule_no.nextval,
+		<if test="memberId != null">
+		#{memberId},
+		</if>
+		<if test="memberId == null">
+		null,
+		</if>
+		<if test="srNo != null">
+		#{ srNo },
+		</if>
+		<if test="srNo == null">
+		null,
+		</if>
+		#{startDate},
+		#{endDate},
+		#{content},
+		#{colorCode},
+		#{scheduleYN},
+		#{dYN},
+		#{timeOpt},
+		#{enabledYN}
+	)
+</insert>
+
+<update id="updateOne">
+update 
+	scheduler
+set
+	start_date = #{startDate},
+	end_date = #{endDate},
+	content = #{content},
+	color_code = #{colorCode},
+	schedule_yn = #{scheduleYN},
+	d_yn = #{dYN},
+	time_opt = #{timeOpt},
+	enabled_yn = #{enabledYN}
+where
+	no = #{ no }
+
+</update>
+
+
+<delete id="deleteSchedule">
+delete from
+	scheduler
+where
+	no = #{ no }
+</delete>
+
+<select id="selectOne" resultType="Scheduler">
+select
+	*
+from
+	scheduler
+where
+	no = #{ no }
+</select>
+
+<insert id="insertTodo">
+insert into
+	scheduler
+values(
+		seq_schedule_no.nextval,
+		<if test="memberId != null">
+		#{memberId},
+		</if>
+		<if test="memberId == null">
+		null,
+		</if>
+		<if test="srNo != null">
+		#{ srNo },
+		</if>
+		<if test="srNo == null">
+		null,
+		</if>
+		#{startDate},
+		#{endDate},
+		#{content},
+		default,
+		'N',
+		'N',
+		null,
+		#{enabledYN}
+)
+
+</insert>
+
+<delete id="deleteTodo">
+delete
+	scheduler
+where
+<choose>
+<when test="memberId !=null">
+	member_id = #{memberId}
+</when>
+<when test="srNo != null">
+	sr_no = #{ srNo }
+</when>
+</choose>
+and
+	start_date = #{startDate}
+and
+	schedule_yn = 'N'
+and
+	d_yn = 'N'
+
+</delete>
+
+	<select id="selectToDoList" resultType="Scheduler">
+	select
+		*
+	from
+		scheduler
+	where
+		member_id = #{memberId}
+	and 
+	    schedule_yn = 'N'
+	and 
+	    d_yn = 'N'
+	and 
+	   to_char(start_date, 'YY/MM/DD') = to_char(sysdate, 'YY/MM/DD')
+	</select>
+
+
+
+<select id="dDaySearch" resultType="scheduler">
+select
+	*
+from
+	scheduler
+where
+	<choose>
+		<when test="memberId !=null">
+			member_id = #{memberId}
+		</when>
+		<when test="roomNum != null">
+			sr_no = #{ roomNum }
+		</when>
+	</choose>
+and 
+	schedule_yn = 'N'
+and
+	d_yn = 'Y'
+</select>
+
+
+
 </mapper>

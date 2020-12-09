@@ -4,4 +4,56 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="attendance">
  
+ 
+ <select id="selectList" parameterType="String" resultMap="attendanceMap">
+ 
+ select *
+ from attendance
+ where member_id = #{memberId}
+
+ 
+ </select>
+ 
+ <resultMap type="map" id="attendanceMap">
+ 	<id column="no" property="no"/>
+ 	<result column="sr_no" property="srNo"/>
+ 	<result column="member_id" property="memberId"/>
+ 	<result column="attend_cnt" property="attendCnt"/>
+ 	<result column="recent_attend_date" property="attendDate"/>
+ </resultMap>
+ 
+ <select id="selectAttendYN" resultType="_int">
+ 	select 
+ 		count(*) 
+ 	from 
+ 		attendance 
+ 	where 
+ 		member_id = #{memberId} 
+ 	and 
+ 		sr_no = #{roomNum} 
+ 	and 
+ 		to_char(recent_attend_date, 'YY/MM/DD') = to_char(sysdate, 'YY/MM/DD')
+ </select>
+ 
+ <update id="updateAttendance">
+ 	update 
+ 		attendance 
+ 	set 
+ 		attend_cnt = attend_cnt + 1,
+ 	 	recent_attend_date = sysdate 
+ 	where 
+ 		member_id = #{memberId} 
+ 	and 
+ 		sr_no = #{roomNum}
+ </update>
+ 
+ <select id="selectAttendList" resultMap="attendanceMap">
+ 	select 
+ 		* 
+ 	from 
+ 		attendance 
+ 	where 
+ 		sr_no = #{roomNum}
+ </select>
+ 
 </mapper>

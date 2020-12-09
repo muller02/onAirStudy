@@ -12,12 +12,16 @@ import lombok.ToString;
 
 @Getter
 @Setter
-//@NoArgsConstructor
-//@AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 
 public class Attendance implements Serializable{
 
-	
+	private int no;
+	private int srNo;
+	private String memberId;
+	private int attendCnt;
+	private Date attendDate;
 	
 }

@@ -167,3 +167,8 @@ $RECYCLE.BIN/
 
 .classpath
 .project
+
+jspwork/**
+
+# ignore properties file
+config.properties

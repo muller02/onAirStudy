@@ -3,4 +3,171 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="member">
+
+	<insert id="insertMember">
+		insert into
+			member
+		values(
+			#{ memberId },
+			#{ memberName },
+			#{ password },
+			default,
+			#{ phone },
+			default,
+			default,
+			default,
+			#{ comment },
+			#{ category },
+			default
+		
+		)
+	</insert>
+
+	
+	<select id="idChk" resultType="int">
+		select
+		 	count(*)
+		from 
+			member
+		where 
+			member_id = #{memberId}	
+	</select>
+
+
+ <select id="selectOneMember" resultMap="memberMap">
+  	select
+  		*
+  	from 
+  		member
+  	where 
+  		member_id = #{ memberId }
+  </select>
+  
+  <!-- 성실멤버 List -->
+  <select id="selectDiligentMember" resultMap="memberMap" >
+ 
+<![CDATA[  
+select * from (
+	select * from 
+	member order by diligent_point desc) 
+where rownum <= 10
+	]]>
+	
+	</select>
+  
+  
+<update id="updateBlack">
+		update member
+		set blacklist_yn = 'Y'
+		where member_id = #{reportedMember}
+	</update>
+  
+	<select id="updateSelectOne" resultMap="memberMap">
+  		select
+		  	*
+		from 
+		  	member
+	    where 
+		  	member_id = #{ memberId }
+  	</select>  
+
+	<update id="updateMember">
+		update
+			member
+		set
+			password = #{ password },
+			phone = #{ phone },
+			member_comment = #{ comment }
+			
+		where
+			member_id = #{ memberId }
+	</update>	
+	
+	<insert id="insertProfilePhoto">
+		insert into 
+			profile_attachment	
+		values(
+			seq_profile_no.nextval,
+			#{ memberId },
+			null,
+			#{ originalFilename },
+			#{ renamedFilename },
+			'경로'	
+		)
+	</insert>
+	
+	<update id="updateProfilePhoto">
+		update 
+			profile_attachment
+		set
+			original_filename = #{originalFilename},
+			renamed_filename = #{renamedFilename}	
+		where 	
+			member_id = #{ memberId }
+	</update>
+	
+	<select id="checkIdProfile" resultType="int">
+		select
+		 	count(*)
+		from 
+			profile_attachment
+		where 
+			member_id = #{memberId}	
+	</select>
+	
+	<delete id="deleteMember">
+		 delete from 
+		 	member
+		 where 
+		 	member_id = #{memberId}	
+	</delete>
+	
+	
+<resultMap type="member" id="memberMap">
+    <result column="member_id" property="memberId"/>
+  	<result column="member_name" property="memberName"/>
+  	<result column="password" property="password"/>
+  	<result column="member_role" property="memberRole"/>
+  	<result column="phone" property="phone"/>
+  	<result column="diligent_point" property="diligentPoint"/>
+  	<result column="blacklist_yn" property="blacklist"/>
+  	<result column="withdraw_yn" property="withdraw"/>
+  	<result column="member_comment" property="comment"/>
+  	<result column="category" property="category"/> 
+  	<result column="m_pic" property="mPic"/>
+  </resultMap>
+
+	<select id="getMemberImage" resultType="string">
+		select renamed_filename
+		from profile_attachment
+		where member_id = #{memberId}
+	</select>
+	
+	<select id="selectNextPaymentDay" resultType="string">
+	select trunc(add_months(payment_date, 3) - sysdate)
+	from payment_log p 
+	where member_id = #{memberId}
+	
+	</select>
+	
+	<select id="selectdDayInfo" resultMap="memberinfoMap">
+		select start_date, content, trunc(start_date - sysdate) "count" 
+		from scheduler 
+		where 
+			d_yn = 'Y' 
+		and 
+			member_id = #{memberId} 
+		and 
+			trunc(start_date - sysdate) >= 0
+	</select>
+  
+  <resultMap type="memberinfo" id="memberinfoMap">
+    <result column="count" property="dayCnt"/>
+  	<result column="start_date" property="startDate"/>
+  	<result column="content" property="content"/>
+  </resultMap>
+	
+
+  
+  
 </mapper>

@@ -4,6 +4,7 @@
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
@@ -21,9 +22,30 @@
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />
 		<beans:property name="suffix" value=".jsp" />
+		<beans:property name="contentType" value="text/html; charset=UTF-8" />
 	</beans:bean>
 	
 	<context:component-scan base-package="com.kh.onairstudy" />
+	
+	<!-- #9. interceptor 등록 -->
+	<interceptors>
+		<interceptor>
+			<mapping path="/**"/>
+			<beans:bean class="com.kh.onairstudy.common.interceptor.LoggerInterceptor"/>
+		</interceptor>
+		 
+		<interceptor>
+			 <mapping path="/diary/**/*.do"/>
+			 <mapping path="/mypage1/*.do"/> 
+			  <mapping path="/mypage1/memberDetail.do"/>
+			<mapping path="/mypage1_index.do"/>
+			<exclude-mapping path="/diary/diaryList.do"/>  
+			<exclude-mapping path="/diary/diaryDetail.do"/> 
+			<beans:bean class="com.kh.onairstudy.common.interceptor.LoginCheckInterceptor"/>	
+		</interceptor>
+		
+		
+	</interceptors> 
 	
 	<!-- #11.1 @Aspect 이하 @Pointcut @Before 등 aop 관련 어노테이션 등록처리 -->
 	<!-- #13.2 application-context의 tx관련설정을 가져와서 servlet-context에 적용 -->
